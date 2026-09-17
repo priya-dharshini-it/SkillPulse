@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillPulse - AI-Powered Skill Assessment & Career Navigation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --accent-purple: #7c3aed;
+            --accent-teal: #14b8a6;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-white: #ffffff;
+            --bg-light: #f9fafb;
+            --bg-lighter: #f3f4f6;
+            --border-color: #e5e7eb;
+            --success-green: #10b981;
+            --error-red: #ef4444;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-white);
+            line-height: 1.6;
+        }
+
+        /* Utility Classes */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-gray);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Links */
+        a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+            border-radius: 6px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav a {
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-left h1 {
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-left > p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-gray);
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-trust {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .hero-trust-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .hero-right {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+            padding: 2rem;
+            border-radius: 1rem;
+            color: white;
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+        }
+
+        .hero-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-card-header h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 0.35rem 0.75rem;
+            border-radius: 1.5rem;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 0;
+            background-color: var(--bg-light);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: var(--text-gray);
+        }
+
+        /* Section Base */
+        section {
+            padding: 60px 0;
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        /* How It Works */
+        .how-it-works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .how-card {
+            background-color: var(--bg-white);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .how-card:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .how-card-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .how-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .how-card p {
+            color: var(--text-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .how-card a {
+            color: var(--primary-blue);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background-color: var(--bg-white);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent-teal);
+            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.1);
+        }
+
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            background-color: var(--bg-lighter);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .service-card p {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Steps Section */
+        .steps-section {
+            background-color: var(--bg-light);
+        }
+
+        .steps-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .step h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .step p {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .steps-cta {
+            text-align: center;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            background-color: var(--bg-light);
+            padding: 40px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-preview h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-stat {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .dashboard-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background-color: var(--bg-lighter);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-teal));
+        }
+
+        /* Analytics Cards */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .analytics-card {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+        }
+
+        .analytics-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .analytics-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .analytics-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background-color: var(--bg-white);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stars {
+            color: #fbbf24;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .testimonial-text {
+            color: var(--text-gray);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .author-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .author-role {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* FAQ */
+        .faq-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background-color: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-white);
+            border: none;
+            width: 100%;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background-color: var(--bg-lighter);
+        }
+
+        .faq-chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.open .faq-question {
+            background-color: var(--bg-lighter);
+        }
+
+        .faq-item.open .faq-chevron {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .cta-banner h2 {
+            color: white;
+        }
+
+        .cta-banner p {
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-banner .btn {
+            margin-top: 2rem;
+        }
+
+        .cta-banner .btn-primary {
+            background-color: white;
+            color: var(--primary-blue);
+        }
+
+        .cta-banner .btn-primary:hover {
+            background-color: var(--bg-light);
+        }
+
+        /* Contact Info */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-item {
+            text-align: left;
+        }
+
+        .contact-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-value {
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        /* Form Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            border: none;
+            background: none;
+            padding: 0;
+            width: auto;
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            clear: both;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-submit {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .form-message {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .form-message.success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+            display: block;
+        }
+
+        .form-message.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error-red);
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-ctas {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon"></div>
+                    SkillPulse
+                </div>
+                <ul class="nav">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#platform">Platform</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="header-actions">
+                    <a href="#login">Log in</a>
+                    <button class="btn btn-primary btn-sm" onclick="openFormModal()">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div style="color: var(--primary-blue); font-weight: 600; margin-bottom: 1rem;">✨ AI-Powered Insights</div>
+                    <h1>Unlock Your Hidden Skills & Accelerate Your Career</h1>
+                    <p>SkillPulse uses advanced AI to assess your skills, identify gaps, and recommend personalized learning paths. Get hired faster with data-driven career guidance.</p>
+                    <div class="hero-ctas">
+                        <button class="btn btn-primary" onclick="openFormModal()">Get Started Free</button>
+                        <button class="btn btn-secondary">See How It Works</button>
+                    </div>
+                    <div class="hero-trust">
+                        <div class="hero-trust-icon">✓</div>
+                        <span>Join 50,000+ professionals discovering their potential</span>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="hero-card-header">
+                        <h4>Analytics Dashboard</h4>
+                        <span style="font-size: 0.75rem; opacity: 0.7;">Live Data</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">82%</div>
+                            <div class="metric-label">Skill Match</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">15</div>
+                            <div class="metric-label">Skills Found</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">3</div>
+                            <div class="metric-label">Paths Ready</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-size: 0.8rem; margin-bottom: 0.5rem;">Career Readiness</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 68%;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.8rem;">Recommended Skills</div>
+                    <div class="skills-tags">
+                        <div class="skill-tag">Python</div>
+                        <div class="skill-tag">Machine Learning</div>
+                        <div class="skill-tag">Data Analysis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>50K+</h3>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-item">
+                    <h3>95%</h3>
+                    <p>Placement Rate</p>
+                </div>
+                <div class="stat-item">
+                    <h3>6 Weeks</h3>
+                    <p>Avg. Time to Hire</p>
+                </div>
+                <div class="stat-item">
+                    <h3>$45K</h3>
+                    <p>Avg. Salary Uplift</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="features">
+        <div class="container">
+            <h2>How SkillPulse Works</h2>
+            <div class="how-it-works-grid">
+                <div class="how-card">
+                    <div class="how-card-icon">🔍</div>
+                    <h3>Discover</h3>
+                    <p>AI analyzes your background, experience, and goals to identify your strengths and hidden potential.</p>
+                    <a href="#">Learn more →</a>
+                </div>
+                <div class="how-card">
+                    <div class="how-card-icon">📚</div>
+                    <h3>Develop</h3>
+                    <p>Get personalized learning recommendations from industry-leading courses and mentors.</p>
+                    <a href="#">Learn more →</a>
+                </div>
+                <div class="how-card">
+                    <div class="how-card-icon">🎯</div>
+                    <h3>Achieve</h3>
+                    <p>Land your dream role with AI-matched job opportunities aligned with your skills and goals.</p>
+                    <a href="#">Learn more →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section id="platform" style="background-color: var(--bg-light);">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h4>Skill Assessment</h4>
+                    <p>Comprehensive evaluation of your technical and soft skills through adaptive testing.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔗</div>
+                    <h4>Skill Gap Analysis</h4>
+                    <p>Identify the exact skills you need to reach your career goals and timeline.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🤖</div>
+                    <h4>AI Skill Matching</h4>
+                    <p>Machine learning algorithms match you with roles that fit your unique profile.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📖</div>
+                    <h4>Course Recommendations</h4>
+                    <p>Curated learning paths from top platforms based on your skill gaps.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💼</div>
+                    <h4>Career Recommendations</h4>
+                    <p>Discover roles that leverage your strengths and accelerate your growth.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📈</div>
+                    <h4>Progress Tracking</h4>
+                    <p>Monitor your development journey with real-time analytics and insights.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📉</div>
+                    <h4>Training Analytics</h4>
+                    <p>Measure the ROI of your learning initiatives with detailed metrics.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎯</div>
+                    <h4>Employment Insights</h4>
+                    <p>Stay ahead of market trends and understand in-demand skills in your field.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="steps-section">
+        <div class="container steps-container">
+            <h2>Getting Started in 4 Steps</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <h4>Sign Up</h4>
+                    <p>Create your account in under 2 minutes</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <h4>Take Assessment</h4>
+                    <p>Complete our comprehensive skill evaluation</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <h4>Get Insights</h4>
+                    <p>Receive detailed reports and personalized recommendations</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">04</div>
+                    <h4>Grow & Succeed</h4>
+                    <p>Follow your path and land your dream role</p>
+                </div>
+            </div>
+            <div class="steps-cta">
+                <button class="btn btn-primary" onclick="openFormModal()">Start Your Journey</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section>
+        <div class="container">
+            <h2>Your Personal Dashboard</h2>
+            <div class="dashboard-preview">
+                <h3>Track Your Progress in Real-Time</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-stat">
+                        <div class="dashboard-stat-label">Overall Skill Score</div>
+                        <div class="dashboard-stat-value">78/100</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 78%;"></div>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat">
+                        <div class="dashboard-stat-label">Career Match %</div>
+                        <div class="dashboard-stat-value">85%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat">
+                        <div class="dashboard-stat-label">Learning Streak</div>
+                        <div class="dashboard-stat-value">42 Days</div>
+                        <div style="font-size: 0.85rem; color: var(--success-green);">🔥 On Fire!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics -->
+    <section style="background-color: var(--bg-light);">
+        <div class="container">
+            <h2>Industry-Leading Results</h2>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-label">Training to Placement</div>
+                    <div class="analytics-value">6 Weeks</div>
+                    <div class="analytics-subtitle">Avg. time from learning to employment</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-label">Avg Time-to-Hired</div>
+                    <div class="analytics-value">42 Days</div>
+                    <div class="analytics-subtitle">From application to offer letter</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-label">Skill Gap Drop</div>
+                    <div class="analytics-value">73%</div>
+                    <div class="analytics-subtitle">Reduction in key skill gaps</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-label">Salary Uplift</div>
+                    <div class="analytics-value">+$45K</div>
+                    <div class="analytics-subtitle">Average salary increase post-placement</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-label">Course Efficacy</div>
+                    <div class="analytics-value">94%</div>
+                    <div class="analytics-subtitle">Success rate of recommended courses</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section>
+        <div class="container">
+            <h2>What Our Users Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"SkillPulse helped me understand which skills I was missing to land my dream role in tech. Within 3 months, I had a job offer 30% higher than expected!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar"></div>
+                        <div class="author-info">
+                            <h4>Sarah Chen</h4>
+                            <p class="author-role">Software Engineer at Google</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"The career recommendations helped me understand what I should learn next. No more guessing or wasting time on irrelevant courses."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar"></div>
+                        <div class="author-info">
+                            <h4>Marcus Johnson</h4>
+                            <p class="author-role">Data Scientist at Meta</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"Instead of randomly choosing courses, I can now focus on the skills that actually matter for my career goals. It's a game-changer!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar"></div>
+                        <div class="author-info">
+                            <h4>Emma Rodriguez</h4>
+                            <p class="author-role">Product Manager at Amazon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section style="background-color: var(--bg-light);">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How accurate is the skill assessment? <span class="faq-chevron">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        Our AI assessment has a 94% accuracy rate validated against industry benchmarks. The system uses adaptive testing to gauge your true skill level across technical and soft skills.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How long does the assessment take? <span class="faq-chevron">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        The initial assessment takes approximately 45 minutes. It's adaptive, so it adjusts based on your performance to accurately assess your level.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Can I retake the assessment? <span class="faq-chevron">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        Yes! You can retake assessments quarterly to track your progress. We recommend waiting at least 3 months between attempts to see meaningful improvement.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What courses are recommended? <span class="faq-chevron">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        We partner with platforms like Coursera, Udacity, LinkedIn Learning, and others. Recommendations are personalized based on your skills, goals, and learning style.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Is my data secure? <span class="faq-chevron">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        We follow industry-leading security standards with end-to-end encryption and regular security audits. Your data is never shared without your explicit consent.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What's the pricing model? <span class="faq-chevron">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        We offer free and premium plans. Free includes basic assessment and recommendations. Premium includes advanced analytics, priority job matching, and 1:1 career coaching.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section>
+        <div class="container">
+            <div class="cta-banner">
+                <h2>Ready to Transform Your Career?</h2>
+                <p>Join thousands of professionals who have already discovered their potential and landed their dream roles.</p>
+                <button class="btn btn-primary" onclick="openFormModal()">Get Started Free</button>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-label">📧 Email</div>
+                        <div class="contact-value">hello@skillpulse.com</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">📞 Phone</div>
+                        <div class="contact-value">+1 (555) 123-4567</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">📍 Location</div>
+                        <div class="contact-value">San Francisco, CA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>SkillPulse</h4>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">Unlock your hidden skills and accelerate your career with AI-powered insights.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Skill Diagnostic</a></li>
+                        <li><a href="#">Predictive Trajectory</a></li>
+                        <li><a href="#">AI Interview Coach</a></li>
+                        <li><a href="#">Talent Portfolio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Career Paths</h4>
+                    <ul>
+                        <li><a href="#">ML Engineer</a></li>
+                        <li><a href="#">Fullstack Architect</a></li>
+                        <li><a href="#">Data Operations</a></li>
+                        <li><a href="#">Cloud Native Systems</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal & Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>&copy; 2026 SkillPulse. All rights reserved.</div>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Form Modal -->
+    <div class="modal" id="formModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeFormModal()">&times;</button>
+            <h2 style="margin-bottom: 1.5rem;">Get Started with SkillPulse</h2>
+            
+            <div class="form-message" id="formMessage"></div>
+            
+            <form id="skillPulseForm" onsubmit="submitForm(event)">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="Email" required placeholder="you@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a password">
+                </div>
+
+                <button type="submit" class="btn btn-primary form-submit">Create Account</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-gray);">
+                By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // AppScript URL - Replace this with your deployed AppScript URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPpo3GOSgiu_o0u4gk66R13k5H2m7IbFKElGJkOP9hbxHRMuGtPrJYisyGi4MCta9b/exec";
+
+        /**
+         * Open the form modal
+         */
+        function openFormModal() {
+            document.getElementById('formModal').classList.add('active');
+        }
+
+        /**
+         * Close the form modal
+         */
+        function closeFormModal() {
+            document.getElementById('formModal').classList.remove('active');
+            resetForm();
+        }
+
+        /**
+         * Reset form and message
+         */
+        function resetForm() {
+            document.getElementById('skillPulseForm').reset();
+            document.getElementById('formMessage').textContent = '';
+            document.getElementById('formMessage').className = 'form-message';
+        }
+
+        /**
+         * Submit form using GET fetch with no-cors mode
+         * This is file:// compatible and works without a server
+         */
+        function submitForm(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const messageEl = document.getElementById('formMessage');
+
+            // Validate inputs
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            // Build URL with query parameters
+            const params = new URLSearchParams({
+                Email: email,
+                password: password
+            });
+
+            const url = SCRIPT_URL + "?" + params.toString();
+
+            // Fetch with GET method and no-cors mode (file:// compatible)
+            fetch(url, {
+                method: "GET",
+                mode: "no-cors"
+            })
+            .then(() => {
+                // Success - response is opaque, so we just assume it worked
+                showSuccess();
+            })
+            .catch((error) => {
+                // Error handler
+                showError('An error occurred. Please try again.');
+                console.error('Fetch error:', error);
+            });
+        }
+
+        /**
+         * Show success message
+         */
+        function showSuccess() {
+            const messageEl = document.getElementById('formMessage');
+            messageEl.textContent = '✓ Account created successfully! Redirecting...';
+            messageEl.className = 'form-message success';
+
+            // Reset form
+            setTimeout(() => {
+                resetForm();
+                closeFormModal();
+            }, 2000);
+        }
+
+        /**
+         * Show error message
+         */
+        function showError(message) {
+            const messageEl = document.getElementById('formMessage');
+            messageEl.textContent = '✗ ' + message;
+            messageEl.className = 'form-message error';
+        }
+
+        /**
+         * Toggle FAQ items
+         */
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('open');
+        }
+
+        /**
+         * Close modal when clicking outside
+         */
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('formModal');
+            if (event.target === modal) {
+                closeFormModal();
+            }
+        });
+    </script>
+</body>
+</html>
